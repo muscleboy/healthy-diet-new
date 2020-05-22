@@ -1,0 +1,69 @@
+<style lang="less">
+
+  page {
+    background: #F9F9F9;
+  }
+
+</style>
+<template>
+  <div class="page">
+    <!--  不知道为何v-for不生效  -->
+    <div class="container-content" wx:for="{{foods}}" wx:key="item.id" wx:for-item="item">
+      <div class="food-result-div">
+        <van-card
+          title="{{item && item.name}}"
+          desc="{{item && item.amount}} 千卡/100克"
+          thumb-link="/pages/food_detail?id={{item && item.id}}"
+          link-type="navigateTo"
+          thumb="/images/{{item && item.id}}.jpg">
+        </van-card>
+        <van-divider />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from "../api/api";
+
+  export default class food_index extends wepy.page {
+    config = {
+      navigationBarTitleText: '搜索结果',
+    };
+
+    data = {
+      foods: [],
+      name: ''
+    }
+
+    onLoad(options){
+      let that = this;
+      that.getFoods(options.name);
+    }
+
+    // 获取到options参数，强制刷新页面
+    onShow(){
+      let pages = getCurrentPages();
+      let currentPage = pages[pages.length-1];
+      this.getFoods(currentPage.options.name)
+    }
+
+    async getFoods(name){
+      let that = this;
+      const json = await api.getFoods({
+        query: {
+          word: name
+        }
+      });
+      if (json.data.code == 1) {
+        // that.recipes = json.data.data;
+        that.setData({
+          foods: json.data.data
+        })
+        console.log(json.data.data)
+      } else {}
+    }
+
+  }
+</script>

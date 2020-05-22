@@ -1,0 +1,61 @@
+<style lang="less">
+
+</style>
+<template>
+  <div>
+    <!--  功能分类：蛋白质，补钙....  -->
+    <div class="function-category" bindtap="items" wx:for="{{ items }}"
+         wx:for-item="item" wx:for-index="index">
+      <van-divider contentPosition="center">{{ item.name }}</van-divider>
+      <van-cell is-link link-type="navigateTo"
+                url="/pages/food_detail?id={{item1.id}}"
+                wx:for="{{ item.foods }}" wx:key="{{ item1.id }}" wx:for-item="item1" wx:for-index="index1">
+        <view slot="title">
+          <view class="van-cell-text">{{ item1.name }}</view>
+          <van-tag type="danger" wx:if="{{ item.id == 1 }}">{{ item1.amount }} 克/每100克</van-tag>
+          <van-tag type="danger" wx:else>{{ item1.amount }} 毫克/每100克</van-tag>
+        </view>
+      </van-cell>
+    </div>
+  </div>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import app from '../app.wpy';
+
+  export default class food_rank_page extends wepy.page {
+     config = {
+       navigationBarTitleText: "食物排行榜"
+    };
+
+    data = {
+      items: [],
+    };
+
+    // onLoad: 只有第一次加载的时候，才会调用，之后在从其他页面回来，不会再调用!!!
+    // onLoad(){
+    //   let that = this;
+    //   this.getFoodList();
+    // }
+
+    // onShow: 每次页面显示的时候，都会调用
+    onShow(){
+      let that = this;
+      that.getFoodList();
+    }
+
+    getFoodList(){
+      let that = this;
+      wx.request({
+          url:"http://localhost:8000/api/category/getAll",
+          success:res=>{
+            that.setData({
+                items: res.data.data
+              });
+          }
+      })
+    }
+
+  }
+</script>

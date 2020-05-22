@@ -1,0 +1,37 @@
+<style lang="less">
+
+</style>
+<template>
+
+  <view>
+    <van-panel title="BMR" desc="基础代谢率" >
+      <view>基础代谢率（BMR）是指人体在清醒而又极端安静的状态下，不受肌肉活动、环境温度、食物及精神紧张等影响时的能量代谢率。
+
+        基础代谢率对减肥有非常大的影响，每天适量的运动有助于提高身体的基础代谢率，而节食(极端是绝食)会降低人的基础代谢率。通过性别，年龄，身高和体重能粗略计算基础代谢率。</view>
+    </van-panel>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from './../api/api.js'
+  export default class user extends wepy.page {
+     config = {
+
+    }
+
+
+
+    data ={
+
+    }
+    methods = {
+
+    }
+
+    onLoad() {
+
+    }
+  }
+</script>

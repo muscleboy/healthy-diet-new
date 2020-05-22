@@ -1,0 +1,98 @@
+<style lang="less">
+
+  .center-image{
+    display: flex;
+    justify-content: center;
+  }
+
+  .login-btn{
+    width: 30%;
+  }
+
+</style>
+<template>
+  <view class="page">
+    <view class="wx-avatar">
+      <view class="center-image">
+        <van-image
+          width="5rem"
+          height="5rem"
+          src="{{ wxUserInfo.avatarUrl }}"/>
+      </view>
+      <button class="login-btn" type="primary" bindgetuserinfo="getUserInfo" open-type="getUserInfo">登录</button>
+    </view>
+    <view class="user-info">
+      <van-swipe-cell right-width="{{ 65 }}" left-width="{{ 65 }}">
+        <van-cell-group>
+          <van-cell title="身高(cm)" value="170"/>
+          <van-cell title="体重(kg)" value="65"/>
+          <van-cell title="性别" value="男"/>
+          <van-cell is-link title="BMI" link-type="navigateTo" url="/pages/bmi" value="21.7"/>
+          <van-cell is-link title="基础代谢(千卡)" link-type="navigateTo" url="/pages/bmr" value="1662.8"/>
+          <van-cell title="患病情况" value="高血压"/>
+          <van-cell title="身体评分(100)" value="80"/>
+          <van-cell is-link title="重新评估" link-type="navigateTo" url="/pages/check"/>
+          <van-cell is-link title="关于" link-type="navigateTo" url="/pages/about"/>
+        </van-cell-group>
+      </van-swipe-cell>
+    </view>
+  </view>
+</template>
+
+<script>
+
+  import wepy from 'wepy';
+  import api from "../api/api"
+  import {OPEN_ID, USER_INFO} from "../utils/constant";
+
+  export default class user extends wepy.page {
+
+    data = {
+      wxUserInfo: {}
+    }
+
+    onLoad(){
+      let that = this;
+      let userInfo = wepy.getStorageSync(USER_INFO);
+      that.setData({
+        wxUserInfo: userInfo
+      })
+    }
+
+    async getUserInfo () {
+      let that = this;
+      let res = await wepy.getSetting();
+      let nickName, avatarUrl;
+      if ((res.authSetting)['scope.userInfo']) {
+        let userInfo = wepy.getStorageSync(USER_INFO);
+        if (!userInfo.nickName) {
+          let data  = await wepy.getUserInfo();
+          if (data) {
+            wepy.setStorageSync(USER_INFO, data.userInfo);
+            that.setData({
+              wxUserInfo: data.userInfo
+            });
+            nickName = data.userInfo.nickName;
+            avatarUrl = data.userInfo.avatarUrl;
+          }
+          // 获取code
+          let res = await wepy.login();
+          if (res.code) {
+            // 使用code进行登录
+            let rlt = await api.wxJsCode2Session({
+              query: {
+                code: res.code,
+                nickName: nickName,
+                avatarUrl: avatarUrl,
+              }
+            });
+            if (rlt.data.data) {
+              let data = rlt.data.data;
+              wepy.setStorageSync(OPEN_ID, data);
+            }
+          }
+        }
+      }
+    }
+  }
+</script>

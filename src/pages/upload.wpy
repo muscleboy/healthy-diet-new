@@ -1,0 +1,110 @@
+<style lang="less">
+
+  .van-uploader{
+    display: block;
+  }
+
+  .recipe-steps-header{
+    display: block;
+    font-weight: bolder;
+    font-size: 20px
+  }
+
+</style>
+<template>
+  <view class="container">
+    <image class="image" src="{{imgPath}}" mode='scaleToFill' bindtap="previewImg"></image>
+    <button bindtap="selectImg">选择图片</button>
+    <button bindtap="uploadImg">上传图片</button>
+    <view class="recipe-steps-header">识别结果：
+      <view>{{result}}</view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from './../api/api.js'
+
+  export default class Index extends wepy.page {
+     config = {
+      navigationBarTitleText: '图片上传',
+    };
+
+    data = {
+       token: "24.71740b519cc6a2ed8e57e650f0d7eaac.2592000.1592272428.282335-19694417",
+       imgPath: "",
+       result: ""
+    };
+
+    // 不要写在methods 里面
+    // 选取图片
+      selectImg () {
+        let that = this;
+        wx.chooseImage({
+          count: 1,
+          sizeType: ['original', 'compressed'],
+          sourceType: ['album', 'camera'],
+          success: function (res) {
+            //res.tempFilePaths 返回图片本地文件路径列表
+            let tempFilePaths = res.tempFilePaths;
+            that.setData({
+              imgPath: tempFilePaths[0]
+            })
+            const filePath = res.tempFilePaths[0]
+            // 上传图片
+            wx.getFileSystemManager().readFile({
+              filePath: filePath,
+              encoding: 'base64',
+              success: function(res) {
+                // console.log("[读取图片数据success]",res.data);
+                that.uploadImg(res.data);    // 调用百度API解析图片获取文字
+              },
+              fail: function(res){
+                console.log("[读取图片数据fail]",res)
+              },
+              complete: function(res){
+                wx.hideLoading()
+              }
+            })
+          }
+        })
+      }
+
+      // 将图片上传到百度API
+      uploadImg (base64) {
+        let that = this;
+        wx.request({
+          url: "https://aip.baidubce.com/rest/2.0/image-classify/v1/classify/ingredient?access_token=" + that.data.token,
+          data: {
+            image: base64
+          },
+          method: 'POST',
+          dataType: 'json',
+          header: {
+            'Content-Type': "application/x-www-form-urlencoded"
+          },
+          success: function (res) {
+            wx.showToast({
+              title: "图像上传成功！",
+              icon: "",
+              duration: 1500,
+              mask: true
+            });
+            that.setData({
+              result: res.data.result[0].name
+            })
+          },
+          fail: function (res) {
+            wx.showToast({
+              title: "上传失败，请检查网络或稍后重试。",
+              icon: "none",
+              duration: 1500,
+              mask: true
+            });
+          }
+        })
+      }
+
+  }
+</script>

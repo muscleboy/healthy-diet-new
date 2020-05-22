@@ -1,0 +1,39 @@
+<style lang="less">
+
+</style>
+<template>
+
+  <view>
+    <van-panel title="BMI" desc="身体质量指数" >
+      <view>BMI[Body Mass Index] 即BMI指数，也叫身体质量指数，是衡量是否肥胖和标准体重的重要指标。
+
+        适用范围：18至65岁的人士。儿童、发育中的青少年、孕妇、乳母、老人及身型健硕的运动员除外。
+
+        世界卫生组织认为BMI指数保持在22左右是比较理想的。</view>
+    </van-panel>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from './../api/api.js'
+  export default class user extends wepy.page {
+     config = {
+
+    }
+
+
+
+    data ={
+
+    }
+    methods = {
+
+    }
+
+    onLoad() {
+
+    }
+  }
+</script>

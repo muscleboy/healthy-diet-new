@@ -1,0 +1,70 @@
+<style lang="less">
+
+  page {
+    background: #F9F9F9;
+  }
+
+</style>
+<template>
+  <div>
+    <div class="food-detail-header">
+        <van-card
+          desc="{{result && result.amount}} {{result && result.unitType}}/100克，适量食用"
+          thumb="/images/1.jpg"
+          title="{{result && result.name}}">
+        </van-card>
+    </div>
+    <div class="food-detail-element">
+      <div class="header">
+        <div>
+          <p style="font-size: 20px; font-weight: bolder">营养元素</p>
+          <p style="margin-left: 400rpx; color: lightgray; font-size: 10px">单位：每100克</p>
+        </div>
+      </div>
+      <div class="food-detail-content" wx:for="{{result && result.elementResponses}}" wx:for-item="item">
+        <div>
+          <van-circle text="{{item && item.name}}" value="{{ item && item.amountPercent }}"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  export default class Index extends wepy.page {
+     config = {
+      navigationBarTitleText: '食物',
+    };
+
+     data = {
+       result: {},
+     };
+
+      onLoad(options){
+        let that = this;
+        that.getFoodDetail(options.id);
+     }
+
+    onShow(){
+      let pages = getCurrentPages();
+      let currentPage = pages[pages.length-1];
+      this.getFoodDetail(currentPage.options.id)
+    }
+
+     getFoodDetail(id){
+       let that = this;
+       wx.request({
+           data: {id:id},
+           url:"http://localhost:8000/api/foodDetail?id=",
+           success:res => {
+             that.setData({
+               result: res.data.data
+             })
+           }
+       })
+     }
+
+  }
+</script>

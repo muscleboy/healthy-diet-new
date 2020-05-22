@@ -1,0 +1,223 @@
+<style lang="less">
+
+  .healthy-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20 rpx 0px;
+  }
+
+  .weight-text {
+    font-size: 60 rpx;
+    display: flex;
+    justify-content: center;
+    margin-top: -35rpx;
+  }
+
+  .content {
+    padding: 10rpx;
+  }
+
+  .search {
+    align-items: center;
+    display: flex;
+    margin: 0 auto;
+    width: 680rpx;
+    .serch_content {
+      display: flex;
+      align-items: center;
+      border-radius: 300rpx;
+      color: #333;
+      width: 560rpx;
+      background: #efefef;
+      padding: 5rpx 12rpx;
+      height: 65rpx;
+      .search_input {
+        font-size: 28rpx;
+        width: 100%;
+      }
+    }
+    .icon-search {
+      font-size: 40rpx;
+    }
+    .btn {
+      width: 120rpx;
+      height: 65rpx;
+      font-size: 28rpx;
+      line-height: 65rpx;
+      margin-left: 20rpx;
+      padding-left: 5rpx;
+      padding-right: 5rpx;
+    }
+    .btn_search {
+      color: #fff;
+      background: #4fc08d;
+    }
+    .icon-del {
+      height: 60rpx;
+      line-height: 60rpx;
+      width: 60rpx;
+      font-size: 40rpx;
+    }
+  }
+
+</style>
+<template>
+  <view>
+    <view class="search">
+      <view class="serch_content">
+        <i class="iconfont icon-search"></i>
+        <input type="text" name="search_input" bindinput="searchInput" class="search_input" focus="true" value="{{search_input_value}}" confirm-type="search" placeholder="搜索商品" />
+        <i wx:if="{{search_input_value!=''}}" @tap="delText" class="iconfont icon-del"></i>
+      </view>
+      <button class="btn btn_cancel" @tap="goBack()" wx:if="{{search_input_value==''}}">取消</button>
+      <button class="btn btn_search" @tap="search()" wx:else>搜索</button>
+    </view>
+
+    <view class="healthy-view">
+      <view>健康评分</view>
+      <view>89.9</view>
+      <view style="width: 70%">
+        <van-progress
+          stroke-width="30"
+          percentage="89"
+          color="linear-gradient(to right, yellowgreen, #06ae56)"/>
+      </view>
+      <view>您的健康评分超过了89%的人...</view>
+    </view>
+    <van-divider/>
+    <view>
+      <view class="weight">
+        <view class="weight-header">体重(kg)</view>
+        <view class="weight-text">65</view>
+        <van-steps steps="{{ weight_steps }}" active="{{ 1 }}"/>
+      </view>
+      <view class="bmi">
+        <view class="header">BMI</view>
+        <view class="weight-text">22.6</view>
+        <van-steps steps="{{ bmi_steps }}" active="{{ 1 }}"/>
+      </view>
+    </view>
+    <view class="diet-recommend">
+      <view>为您推荐</view>
+      <van-grid column-num="2" border="{{ false }}">
+        <van-grid-item use-slot url="/pages/recipe_detail?id={{item.id}}" text="{{item.name}}"
+                       link-type="navigateTo" wx:for="{{ recipes }}" wx:for-item="item" wx:for-index="index">
+          <image style="width: 100%; height: 90px;" src="/images/{{item.id}}.jpg"/>
+          <div class="recipe-name">{{ item.name }}</div>
+        </van-grid-item>
+      </van-grid>
+    </view>
+  </view>
+</template>
+
+<script>
+
+  import wepy from 'wepy';
+
+  export default class Home extends wepy.page {
+
+    data = {
+      value: '',
+      weight_steps: [
+        {
+          desc: '消瘦'
+        },
+        {
+          desc: '正常'
+        },
+        {
+          desc: '超重'
+        },
+        {
+          desc: '肥胖'
+        }
+      ],
+      bmi_steps: [
+        {
+          desc: '消瘦'
+        },
+        {
+          desc: '正常'
+        },
+        {
+          desc: '超重'
+        },
+        {
+          desc: '肥胖'
+        }
+      ],
+      recipes: [
+        {
+          id: 129,
+          name: '菜叶窝头'
+        },
+        {
+          id: 130,
+          name: '猕猴桃花朵'
+        },
+        {
+          id: 131,
+          name: '牛奶苹果汁'
+        },
+        {
+          id: 132,
+          name: '猕猴桃雪梨汁'
+        }
+      ],
+      imageURL: '/images/1.jpg',
+      user: {
+        id: 1
+      },
+      search_input_value: '',
+    };
+
+    methods = {
+      searchInput(e) {
+        this.search_input_value = e.detail.value;
+        this.$apply();
+      },
+      goBack() {
+        wepy.navigateBack({
+          delta: 1 // 回退前 delta(默认为1) 页面
+        })
+      },
+      search() {
+        this.$emit('searchValue', this.search_input_value);
+        let name = this.search_input_value;
+        wepy.navigateTo({
+          url: '/pages/recipe_result?name=' + name
+        });
+      },
+      delText() {
+        this.search_input_value = "";
+        this.$apply();
+      },
+      show(param){
+        this.show = param;
+        this.$apply();
+      }
+    }
+
+    onClick() {
+      wepy.navigateTo({
+        url: '/pages/recipe_result'
+      });
+      let that = this;
+      that.getUserById(that.user.id);
+    };
+
+    getUserById(id) {
+      wx.request({
+        url: 'http://localhost:8000/api/user',
+        data: {
+          id: id
+        },
+        success: res => {
+          console.log(res.data);
+        }
+      });
+    }
+  }
+</script>

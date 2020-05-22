@@ -1,0 +1,106 @@
+<style lang="less">
+
+</style>
+<template>
+  <div class="container">
+    <form catchsubmit="formSubmit" catchreset="formReset">
+      <view class="page-section page-section-gap">
+        <view class="page-section-title">性别</view>
+        <radio-group name="sex">
+          <label><radio value="男"/>男</label>
+          <label><radio value="女"/>女</label>
+        </radio-group>
+      </view>
+
+      <view class="page-section page-section-gap">
+        <view class="page-section-title">年龄</view>
+        <slider value="{{ age }}" max="65" min="18" name="age" show-value ></slider>
+      </view>
+
+      <view class="page-section page-section-gap">
+        <view class="page-section-title">身高(cm)</view>
+        <slider value="{{ height }}" max="280" min="100" name="height" show-value ></slider>
+      </view>
+
+      <view class="page-section page-section-gap">
+        <view class="page-section-title">体重(kg)</view>
+        <slider value="{{ weight }}" max="150" min="40" name="weight" show-value ></slider>
+      </view>
+
+
+      <view class="page-section">
+        <view class="page-section-title">疾病</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__bd" style="margin: 30rpx 0" >
+              <input class="weui-input" value="{{ problem }}" name="problem" placeholder="请输出疾病" />
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="btn-area">
+        <button style="margin: 30rpx 0" type="primary" formType="submit">提交</button>
+        <button style="margin: 30rpx 0" formType="reset">重置</button>
+      </view>
+      <view wx:if="{{isSubmit}}">
+        {{warn ? warn : "年龄："+age+"，身高："+height+"，体重："+weight+"，性别："+sex}}
+      </view>
+    </form>
+  </div>
+</template>
+
+<script>
+
+  import wepy from 'wepy';
+  import api from './../api/api.js'
+  import {OPEN_ID, USER_INFO} from "../utils/constant";
+
+  export default class Index extends wepy.page {
+     config = {
+      navigationBarTitleText: '身体信息填写',
+    };
+
+    data = {
+      height: "",
+      weight: "",
+      age: "",
+      sex: "",
+      problem: "",
+      isSubmit: false,
+      warn: ""
+    };
+
+    onLoad() {
+      let openid = wepy.getStorageSync(OPEN_ID);
+      console.log("check onLoad: " + openid);
+    }
+
+    async formSubmit(e){
+      let openid = wepy.getStorageSync(OPEN_ID);
+      let {sex, age, height, weight, problem} = e.detail.value;
+      if (!sex || !age || !height || !weight || !problem) {
+        this.setData({
+          warn: "不能为空！",
+          isSubmit: true
+        });
+        return;
+      }
+      let res = await api.userBodyCheck({
+        query: {
+          openid: openid,
+          sex: sex,
+          age: age,
+          height: height,
+          weight: weight,
+          problem: problem
+        }
+      })
+      if (res.data.code == 1){
+        wepy.switchTo({
+          url: '/pages/user?openid=' + openid
+        })
+      }
+    }
+
+  }
+</script>

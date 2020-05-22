@@ -1,0 +1,67 @@
+<style lang="less">
+
+  page {
+    background: #F9F9F9;
+  }
+
+</style>
+<template>
+  <div class="page">
+    <!--  不知道为何v-for不生效  -->
+    <div class="container-content" wx:for="{{recipes}}" wx:key="item.id" wx:for-item="item">
+      <div class="food-result-div">
+        <van-card
+          title="{{item.name}}"
+          desc="{{item.category}}"
+          tag="{{item.score}}"
+          thumb-link="/pages/recipe_detail?id={{item.id}}"
+          link-type="navigateTo"
+          thumb="/images/4.jpg">
+        </van-card>
+        <van-divider />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../api/api';
+
+  export default class recipe_result extends wepy.page {
+    config = {
+      navigationBarTitleText: '菜谱',
+    };
+
+    data = {
+      recipes: [],
+    };
+    onLoad(options){
+      // let that = this;
+      // that.getRecipes(options.name);
+    }
+
+    onShow(){
+      let that = this;
+      let pages = getCurrentPages();
+      let currentPage = pages[pages.length-1];
+      that.getRecipes(currentPage.options.name)
+    }
+
+    async getRecipes(name){
+      let that = this;
+      const json = await api.getRecipes({
+        query: {
+          name: name
+        }
+      });
+      if (json.data.code == 1) {
+        // that.recipes = json.data.data;
+        that.setData({
+          recipes: json.data.data
+        })
+      } else {}
+    }
+
+  }
+</script>

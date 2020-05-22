@@ -1,0 +1,147 @@
+<style lang="less">
+
+  .container-content {
+    height: 88vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .justify-width{
+    width: 85%;
+  }
+
+  .search {
+    align-items: center;
+    display: flex;
+    margin: 0 auto;
+    width: 680rpx;
+    .serch_content {
+      display: flex;
+      align-items: center;
+      border-radius: 300rpx;
+      color: #333;
+      width: 560rpx;
+      background: #efefef;
+      padding: 5rpx 12rpx;
+      height: 65rpx;
+      .search_input {
+        font-size: 28rpx;
+        width: 100%;
+      }
+    }
+    .icon-search {
+      font-size: 40rpx;
+    }
+    .btn {
+      width: 120rpx;
+      height: 65rpx;
+      font-size: 28rpx;
+      line-height: 65rpx;
+      margin-left: 20rpx;
+      padding-left: 5rpx;
+      padding-right: 5rpx;
+    }
+    .btn_search {
+      color: #fff;
+      background: #4fc08d;
+    }
+    .icon-del {
+      height: 60rpx;
+      line-height: 60rpx;
+      width: 60rpx;
+      font-size: 40rpx;
+    }
+  }
+
+</style>
+<template>
+  <view class="page">
+    <view class="search">
+      <view class="serch_content">
+        <i class="iconfont icon-search"></i>
+        <input type="text" name="search_input" bindinput="searchInput" class="search_input" focus="true" value="{{search_input_value}}" confirm-type="search" placeholder="搜索商品" />
+        <i wx:if="{{search_input_value!=''}}" @tap="delText" class="iconfont icon-del"></i>
+      </view>
+      <button class="btn btn_cancel" @tap="goBack()" wx:if="{{search_input_value==''}}">取消</button>
+      <button class="btn btn_search" @tap="search()" wx:else>搜索</button>
+    </view>
+    <view class="container-content">
+      <view class="justify-width">
+        <van-card
+          thumb-link="/pages/food_rank_page"
+          link-type="navigateTo"
+          tag="🏆"
+          title="食物排行榜"
+          desc="查看各个元素中的食物冠军"
+          thumb="{{ imageURL }}">
+        </van-card>
+      </view>
+      <view class="justify-width">
+        <van-card
+          thumb-link="/pages/food_recommend"
+          link-type="navigateTo"
+          tag="🏆"
+          title="常见慢性病饮食推荐"
+          desc="常见慢性病的禁忌"
+          thumb="{{ imageURL }}">
+        </van-card>
+      </view>
+      <view class="justify-width">
+        <van-card
+          thumb-link="/pages/upload"
+          link-type="navigateTo"
+          tag="🏆"
+          title="菜品识别"
+          desc="上传食物图片，进行识别"
+          thumb="{{ imageURL }}">
+        </van-card>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import search from '../components/search';
+  import api from './../api/api.js'
+  export default class Index extends wepy.page {
+     config = {
+
+    };
+
+
+    data ={
+      search_input_value: '',
+    };
+
+    methods = {
+      searchInput(e) {
+        this.search_input_value = e.detail.value;
+        this.$apply();
+      },
+      goBack() {
+        wepy.navigateBack({
+          delta: 1 // 回退前 delta(默认为1) 页面
+        })
+      },
+      search() {
+        this.$emit('searchValue', this.search_input_value);
+        let name = this.search_input_value;
+        wepy.navigateTo({
+          url: '/pages/food_result?name=' + name
+        });
+      },
+      delText() {
+        this.search_input_value = "";
+        this.$apply();
+      },
+      show(param){
+        this.show = param;
+        this.$apply();
+      }
+    }
+
+  }
+</script>

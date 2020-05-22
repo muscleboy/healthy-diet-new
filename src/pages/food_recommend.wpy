@@ -1,0 +1,59 @@
+<style lang="less">
+
+  .van-cell-text{
+    /*display: flex;*/
+    /*justify-content: center;*/
+    text-align: center;
+  }
+
+</style>
+<template>
+  <div>
+    <!--  功能分类：高血压，补血....  -->
+    <div wx:for="{{ items }}"
+         wx:for-item="item" wx:for-index="index">
+      <van-divider contentPosition="center">{{ item.categoryName }}</van-divider>
+      <van-cell is-link link-type="navigateTo"
+                url="/pages/recipe_detail?id={{ item.rids[index1] }}"
+                wx:for="{{ item.rids }}" wx:key="{{index1}}" wx:for-item="item1" wx:for-index="index1">
+        <view slot="title">
+        </view>
+      <view class="van-cell-text">{{ item.recipeNames[index1] }}</view>
+      </van-cell>
+    </div>
+  </div>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import api from '../api/api'
+
+  export default class food_recommend extends wepy.page {
+     config = {
+       navigationBarTitleText: "常见慢性病饮食推荐"
+    };
+
+    data = {
+      items: [],
+    };
+
+    onShow() {
+      let that = this;
+      that.getRecoRecipes();
+    }
+
+    async getRecoRecipes(){
+      let that = this;
+      let res = await api.getRecommendRecipes({
+        query: {
+
+        }
+      });
+      console.log(res.data.message);
+      that.setData({
+        items: res.data.data
+      })
+    }
+
+  }
+</script>
