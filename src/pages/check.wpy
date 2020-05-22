@@ -29,11 +29,17 @@
 
 
       <view class="page-section">
-        <view class="page-section-title">疾病</view>
         <view class="weui-cells weui-cells_after-title">
           <view class="weui-cell weui-cell_input">
             <view class="weui-cell__bd" style="margin: 30rpx 0" >
-              <input class="weui-input" value="{{ problem }}" name="problem" placeholder="请输出疾病" />
+              <view class="section">
+                <picker bindchange="bindPickerChange" value="{{index}}" range="{{problems}}">
+                  <view class="picker">
+                    当前选择：{{problems[index]}}
+                  </view>
+                </picker>
+              </view>
+<!--              <input class="weui-input" value="{{ problem }}" name="problem" placeholder="请输出疾病" />-->
             </view>
           </view>
         </view>
@@ -67,13 +73,24 @@
       sex: "",
       problem: "",
       isSubmit: false,
-      warn: ""
+      warn: "",
+      problems: ['高血脂', "高血压", '糖尿病', '补血', '感冒', '血糖高', '胃病', '败血症'],
+      index: 0
     };
 
     onLoad() {
       let openid = wepy.getStorageSync(OPEN_ID);
       console.log("check onLoad: " + openid);
     }
+
+      bindPickerChange(e) {
+        console.log('picker发送选择改变，携带值为', this.problems[e.detail.value]);
+        // 使用that.setData({}) 会导致页面数据丢失，无语了.....
+        this.index = e.detail.value;
+        // that.setData({
+        //   index: e.detail.value
+        // })
+      }
 
     async formSubmit(e){
       let openid = wepy.getStorageSync(OPEN_ID);

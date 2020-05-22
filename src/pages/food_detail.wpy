@@ -21,7 +21,7 @@
           <p style="margin-left: 400rpx; color: lightgray; font-size: 10px">单位：每100克</p>
         </div>
       </div>
-      <div class="food-detail-content" wx:for="{{result && result.elementResponses}}" wx:for-item="item">
+      <div class="food-detail-content" wx:key="item" wx:for="{{result && result.elementResponses}}" wx:for-item="item">
         <div>
           <van-circle text="{{item && item.name}}" value="{{ item && item.amountPercent }}"/>
         </div>
@@ -59,9 +59,7 @@
            data: {id:id},
            url:"http://localhost:8000/api/foodDetail?id=",
            success:res => {
-             that.setData({
-               result: res.data.data
-             })
+             this.result = res.data.data;
            }
        })
      }

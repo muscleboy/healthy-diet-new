@@ -5,11 +5,11 @@
   <div>
     <!--  功能分类：蛋白质，补钙....  -->
     <div class="function-category" bindtap="items" wx:for="{{ items }}"
-         wx:for-item="item" wx:for-index="index">
+         wx:for-item="item" wx:key="index" wx:for-index="index">
       <van-divider contentPosition="center">{{ item.name }}</van-divider>
       <van-cell is-link link-type="navigateTo"
                 url="/pages/food_detail?id={{item1.id}}"
-                wx:for="{{ item.foods }}" wx:key="{{ item1.id }}" wx:for-item="item1" wx:for-index="index1">
+                wx:for="{{ item.foods }}" wx:key="index1" wx:for-item="item1" wx:for-index="index1">
         <view slot="title">
           <view class="van-cell-text">{{ item1.name }}</view>
           <van-tag type="danger" wx:if="{{ item.id == 1 }}">{{ item1.amount }} 克/每100克</van-tag>
@@ -34,10 +34,10 @@
     };
 
     // onLoad: 只有第一次加载的时候，才会调用，之后在从其他页面回来，不会再调用!!!
-    // onLoad(){
-    //   let that = this;
-    //   this.getFoodList();
-    // }
+    onLoad(){
+      let that = this;
+      that.getFoodList();
+    }
 
     // onShow: 每次页面显示的时候，都会调用
     onShow(){
@@ -50,9 +50,7 @@
       wx.request({
           url:"http://localhost:8000/api/category/getAll",
           success:res=>{
-            that.setData({
-                items: res.data.data
-              });
+            this.items = res.data.data;
           }
       })
     }
