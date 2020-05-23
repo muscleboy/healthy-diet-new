@@ -40,10 +40,10 @@
     }
 
     // onShow: 每次页面显示的时候，都会调用
-    onShow(){
-      let that = this;
-      that.getFoodList();
-    }
+    // onShow(){
+    //   let that = this;
+    //   that.getFoodList();
+    // }
 
     getFoodList(){
       let that = this;

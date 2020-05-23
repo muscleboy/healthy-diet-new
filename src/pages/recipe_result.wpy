@@ -8,7 +8,7 @@
 <template>
   <div class="page">
     <!--  不知道为何v-for不生效  -->
-    <div class="container-content" wx:for="{{recipes}}" wx:key="item.id" wx:for-item="item">
+    <div class="container-content" wx:for="{{recipes}}" wx:key="index" wx:for-index="index" wx:for-item="item">
       <div class="food-result-div">
         <van-card
           title="{{item.name}}"
@@ -16,7 +16,7 @@
           tag="{{item.score}}"
           thumb-link="/pages/recipe_detail?id={{item.id}}"
           link-type="navigateTo"
-          thumb="/images/4.jpg">
+          thumb="{{item.imgSrc}}">
         </van-card>
         <van-divider />
       </div>
@@ -36,32 +36,26 @@
     data = {
       recipes: [],
     };
+
     onLoad(options){
-      // let that = this;
-      // that.getRecipes(options.name);
+      let that = this;
+      that.getRecipes(options.name);
     }
 
-    onShow(){
-      let that = this;
-      let pages = getCurrentPages();
-      let currentPage = pages[pages.length-1];
-      that.getRecipes(currentPage.options.name)
-    }
+    // onShow(){
+    //   let that = this;
+    //   let pages = getCurrentPages();
+    //   let currentPage = pages[pages.length-1];
+    //   that.getRecipes(currentPage.options.name)
+    // }
 
-    async getRecipes(name){
-      let that = this;
-      const json = await api.getRecipes({
-        query: {
-          name: name
+    getRecipes(name){
+      wx.request({
+        url:"http://localhost:8000/api/recipes?name=" + name,
+        success:res=>{
+          this.recipes = res.data.data;
         }
-      });
-      if (json.data.code == 1) {
-        // that.recipes = json.data.data;
-        that.setData({
-          recipes: json.data.data
-        })
-      } else {}
+      })
     }
-
   }
 </script>
