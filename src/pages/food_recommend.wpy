@@ -1,10 +1,6 @@
 <style lang="less">
 
-  .van-cell-text{
-    /*display: flex;*/
-    /*justify-content: center;*/
-    text-align: center;
-  }
+
 
 </style>
 <template>
@@ -17,8 +13,8 @@
                 url="/pages/recipe_detail?id={{ item.rids[index1] }}"
                 wx:for="{{ item.rids }}" wx:key="{{index1}}" wx:for-item="item1" wx:for-index="index1">
         <view slot="title">
+          {{ item.recipeNames[index1] }}
         </view>
-      <view class="van-cell-text">{{ item.recipeNames[index1] }}</view>
       </van-cell>
     </div>
   </div>

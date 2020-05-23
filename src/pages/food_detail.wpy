@@ -9,7 +9,7 @@
   <div>
     <div class="food-detail-header">
         <van-card
-          desc="{{result && result.amount}} {{result && result.unitType}}/100克，适量食用"
+          desc="{{ result.categoryName }}: {{result && result.amount}} {{result && result.unitType}}/100克，适量食用"
           thumb="/images/1.jpg"
           title="{{result && result.name}}">
         </van-card>

@@ -87,6 +87,7 @@ export default class extends wepy.app {
       "van-field": "../components/lib/field/index",
       "van-radio": "../components/lib/radio/index",
       "van-radio-group": "../components/lib/radio-group/index",
+      "van-skeleton": "../components/lib/skeleton/index"
     }
   }
 

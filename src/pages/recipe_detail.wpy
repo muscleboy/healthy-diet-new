@@ -47,7 +47,9 @@
            wx:for-item="item" wx:for-index="index">
         <div class="recipe-steps-header">第{{index + 1}}步</div>
           <div class="step">{{item && item.stepText}}
+            <!--      图片居中排版      -->
             <van-image
+              style="display: flex; justify-content: center"
               width="100"
               height="100"
               src="{{food && food.stepImg}}{{ index + 1 }}.jpg"/>
