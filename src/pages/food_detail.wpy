@@ -57,7 +57,7 @@
        let that = this;
        wx.request({
            data: {id:id},
-           url:"http://localhost:8000/api/foodDetail?id=",
+           url:"http://192.168.0.169:8000/api/foodDetail?id=",
            success:res => {
              this.result = res.data.data;
            }

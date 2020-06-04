@@ -8,8 +8,9 @@
 <template>
   <div class="page">
     <!--  不知道为何v-for不生效  -->
-    <div class="container-content" wx:for="{{recipes}}" wx:key="index" wx:for-index="index" wx:for-item="item">
-      <div class="food-result-div">
+    <view class="container-content" wx:for="{{recipes}}" wx:key="index"
+         wx:for-index="index" wx:for-item="item">
+      <view class="food-result-div">
         <van-card
           title="{{item.name}}"
           desc="{{item.category}}"
@@ -19,8 +20,8 @@
           thumb="{{item.imgSrc}}">
         </van-card>
         <van-divider />
-      </div>
-    </div>
+      </view>
+    </view>
   </div>
 </template>
 
@@ -51,7 +52,7 @@
 
     getRecipes(name){
       wx.request({
-        url:"http://localhost:8000/api/recipes?name=" + name,
+        url:"http://192.168.0.169:8000/api/recipes?name=" + name,
         success:res=>{
           this.recipes = res.data.data;
         }

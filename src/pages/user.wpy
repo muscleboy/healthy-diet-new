@@ -17,20 +17,21 @@
         <van-image
           width="5rem"
           height="5rem"
-          src="{{ wxUserInfo.avatarUrl }}"/>
+          src="{{ userInfo.wxAvatar }}"/>
       </view>
-      <button class="login-btn" type="primary" bindgetuserinfo="getUserInfo" open-type="getUserInfo">登录</button>
+      <view wx:if="{{userInfo}}" style="display: flex; justify-content: center">{{userInfo.wxName}}</view>
+      <button wx:else class="login-btn" type="primary" bindgetuserinfo="getUserInfo" open-type="getUserInfo">登录</button>
     </view>
     <view class="user-info">
       <van-swipe-cell right-width="{{ 65 }}" left-width="{{ 65 }}">
         <van-cell-group>
-          <van-cell title="身高(cm)" value="170"/>
-          <van-cell title="体重(kg)" value="65"/>
-          <van-cell title="性别" value="男"/>
-          <van-cell is-link title="BMI" link-type="navigateTo" url="/pages/bmi" value="21.7"/>
-          <van-cell is-link title="基础代谢(千卡)" link-type="navigateTo" url="/pages/bmr" value="1662.8"/>
-          <van-cell title="患病情况" value="高血压"/>
-          <van-cell title="身体评分(100)" value="80"/>
+          <van-cell title="身高(cm)" value="{{userInfo.height}}"/>
+          <van-cell title="体重(kg)" value="{{userInfo.weight}}"/>
+          <van-cell title="性别" value="{{userInfo.sex}}"/>
+          <van-cell title="患病情况" value="{{userInfo.problem}}"/>
+          <van-cell title="身体评分(100)" value="{{userInfo.score}}"/>
+          <van-cell is-link title="BMI" link-type="navigateTo" url="/pages/bmi" value="{{userInfo.bmi}}"/>
+          <van-cell is-link title="基础代谢(千卡)" link-type="navigateTo" url="/pages/bmr" value="{{userInfo.bmr}}"/>
           <van-cell is-link title="重新评估" link-type="navigateTo" url="/pages/check"/>
           <van-cell is-link title="关于" link-type="navigateTo" url="/pages/about"/>
         </van-cell-group>
@@ -48,19 +49,25 @@
   export default class user extends wepy.page {
 
     data = {
-      wxUserInfo: {}
+      userInfo: {}
     }
 
     onLoad(){
-      let that = this;
+      this.getUserInfo();
       let userInfo = wepy.getStorageSync(USER_INFO);
-      that.setData({
-        wxUserInfo: userInfo
-      })
+      this.userInfo = userInfo;
+      // that.setData({
+      //   userInfo: userInfo
+      // })
     }
 
+    // onShow(){
+    //   this.getUserInfo();
+    //   let userInfo = wepy.getStorageSync(USER_INFO);
+    //   this.userInfo = userInfo;
+    // }
+
     async getUserInfo () {
-      let that = this;
       let res = await wepy.getSetting();
       let nickName, avatarUrl;
       if ((res.authSetting)['scope.userInfo']) {
@@ -68,10 +75,6 @@
         if (!userInfo.nickName) {
           let data  = await wepy.getUserInfo();
           if (data) {
-            wepy.setStorageSync(USER_INFO, data.userInfo);
-            that.setData({
-              wxUserInfo: data.userInfo
-            });
             nickName = data.userInfo.nickName;
             avatarUrl = data.userInfo.avatarUrl;
           }
@@ -88,7 +91,11 @@
             });
             if (rlt.data.data) {
               let data = rlt.data.data;
-              wepy.setStorageSync(OPEN_ID, data);
+              console.log("rlt.data.data");
+              console.log(rlt.data.data);
+              wepy.setStorageSync(OPEN_ID, data.openid);
+              wepy.setStorageSync(USER_INFO, data);
+              this.userInfo = data;
             }
           }
         }

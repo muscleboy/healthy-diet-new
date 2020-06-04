@@ -2,7 +2,8 @@ import {
   wxRequest
 } from '../utils/wxRequest';
 
-const API = "http://localhost:8000/api";
+// const API = "http://localhost:8000/api";
+const API = "http://192.168.0.169:8000/api";
 
 /**
  * 获取发现好商品接口

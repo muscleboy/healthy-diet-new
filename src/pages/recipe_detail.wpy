@@ -81,12 +81,12 @@
        that.getRecipe(options.id)
      }
 
-    // onShow(){
-    //   let that = this;
-    //   let pages = getCurrentPages();
-    //   let currentPage = pages[pages.length-1];
-    //   that.getRecipe(currentPage.options.id)
-    // }
+    onShow(){
+      let that = this;
+      let pages = getCurrentPages();
+      let currentPage = pages[pages.length-1];
+      that.getRecipe(currentPage.options.id)
+    }
 
     getRecipe(id){
       wx.request({
